@@ -13,6 +13,7 @@
     "react": "^16.12.0",
     "react-dom": "^16.12.0",
     "react-scripts": "3.4.0",
+    "stream-sea-client": "1.2.0",
     "typescript": "3.7.5"
   },
   "scripts": {
