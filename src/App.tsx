@@ -12,6 +12,7 @@ const subscribeToStreamSea = async (cb: (msg: any) => void) => {
     remoteServerHost: process.env.REACT_APP_REMOTE_SERVER_HOST!,
     remoteServerPort: process.env.REACT_APP_REMOTE_SERVER_PORT || '443',
     secure: !!process.env.REACT_APP_SECURE,
+    fanout: true,
   })
   subscription.on('message', (msg:any) => {cb(msg)})
   subscription.on('error', (err:any) => console.error(err))
