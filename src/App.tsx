@@ -5,18 +5,31 @@ import styled from 'styled-components';
 import JSONTree from 'react-json-tree';
 
 const subscribeToStreamSea = async (cb: (msg: any) => void) => {
-  const subscription = await streamSea.subscribe({
-    stream: process.env.REACT_APP_STREAM_NAME!,
-    clientId: process.env.REACT_APP_CLIENT_ID!,
-    clientSecret: process.env.REACT_APP_CLIENT_SECRET!,
-    remoteServerHost: process.env.REACT_APP_REMOTE_SERVER_HOST!,
-    remoteServerPort: process.env.REACT_APP_REMOTE_SERVER_PORT || '443',
-    secure: !!process.env.REACT_APP_SECURE,
-    fanout: true,
-  })
-  subscription.on('message', (msg:any) => {cb(msg)})
-  subscription.on('error', (err:any) => console.error(err))
-  subscription.on('close', () =>console.log('Connection closed'))
+  let subscription
+  if (process.env.REACT_APP_JWT){
+    subscription = await streamSea.subscribeWithJwt({
+      stream: process.env.REACT_APP_STREAM_NAME!,
+      clientId: process.env.REACT_APP_CLIENT_ID!,
+      jwt: process.env.REACT_APP_JWT!,
+      remoteServerHost: process.env.REACT_APP_REMOTE_SERVER_HOST!,
+      remoteServerPort: process.env.REACT_APP_REMOTE_SERVER_PORT || '443',
+      secure: !!process.env.REACT_APP_SECURE,
+      fanout: true,
+    })
+  } else {
+    subscription = await streamSea.subscribe({
+      stream: process.env.REACT_APP_STREAM_NAME!,
+      clientId: process.env.REACT_APP_CLIENT_ID!,
+      clientSecret: process.env.REACT_APP_CLIENT_SECRET!,
+      remoteServerHost: process.env.REACT_APP_REMOTE_SERVER_HOST!,
+      remoteServerPort: process.env.REACT_APP_REMOTE_SERVER_PORT || '443',
+      secure: !!process.env.REACT_APP_SECURE,
+      fanout: true,
+    })
+  }
+  subscription.on('message', (msg: any) => cb(msg))
+  subscription.on('error', (err: any) => console.error(err))
+  subscription.on('close', () => console.log('Connection closed'))
 }
 
 const AppContainer = styled.div`
